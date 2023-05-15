@@ -69,13 +69,14 @@ public class OrderService extends FileContext<Ticket> {
         orderRepository.updateById(order.getId(), order);
     }
     public double getRevenueOfFilm( long idFilm) {
-        List<Double> total = new ArrayList<>();
+//        List<Double> total = new ArrayList<>();
         List<Order> allOrders = getAllOrder();
+        List<Ticket> tickets = ticketService.getAllTickets();
         double revenue = 0;
         for (int i = 0; i < allOrders.size(); i++) {
-            for (Ticket ticket : allOrders.get(i).getOrderitemList()) {
-                if (showTimeService.findFilmByShowTimeId(ticket.getShowTimeId()) == idFilm) {
-                    revenue += ticket.getTotalPrice();
+            for (int j = 0; j < tickets.size(); j++) {
+                if (allOrders.get(i).getId() == tickets.get(j).getIdOrder() && showTimeService.findFilmByShowTimeId(tickets.get(j).getShowTimeId()) == idFilm) {
+                    revenue += tickets.get(j).getTotalPrice();
                 }
             }
         }

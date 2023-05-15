@@ -3,6 +3,7 @@ package model;
 import repository.IModel;
 import service.SeatService;
 import service.ShowTimeService;
+import utils.CurrencyFormat;
 import utils.DateUtils;
 
 import java.util.Date;
@@ -166,7 +167,7 @@ public class Ticket implements IModel<Ticket> {
     @Override
     public Ticket parseData(String line) {
         Ticket ticket = new Ticket();
-
+        CurrencyFormat currencyFormat = new CurrencyFormat();
         //long id, long idOrder, long showTimeId, long idSeat, total
         String[] itemInfo = line.split(",");
         long id = Long.parseLong(itemInfo[0]);
@@ -198,7 +199,7 @@ public class Ticket implements IModel<Ticket> {
         String position = seatService.getPostionSeatById(this.idSeat);
         String format = showTimeService.findById(this.showTimeId).getFormat().getNameFormat();
         return String.format("║%7s║%-30s║%-20s║%-7s║%-7s║%-7s║%-20s║",
-                this.id, filmName, start, roomName, position, format, this.totalPrice);
+                this.id, filmName, start, roomName, position, format, CurrencyFormat.covertPriceToString(this.totalPrice));
     }
     public String simpleView() {
         Film film = showTimeService.getFilmByShowTimeId(this.showTimeId);
@@ -207,7 +208,8 @@ public class Ticket implements IModel<Ticket> {
         String start = DateUtils.convertDateToString(startTime);
         String roomName = seatService.getRoomById(this.idSeat);
         String position = seatService.getPostionSeatById(this.idSeat);
-        return String.format("                                  ║%7s|%-30s|%-20s|%-7s|%-7s|%-15s║", this.id, filmName, start, roomName, position, this.totalPrice);
+        return String.format("                                  ║%7s|%-30s|%-20s|%-7s|%-7s|%-15s║",
+                this.id, filmName, start, roomName, position, CurrencyFormat.covertPriceToString(this.totalPrice));
     }
 
     @Override

@@ -173,7 +173,7 @@ public class ShowTime implements IModel<ShowTime> {
     }
 
     @Override
-    public ShowTime parseData(String line) throws InstantiationException, IllegalAccessException {
+    public ShowTime parseData(String line) {
         //long id, long idFilm, Date startTime, ERoom idRoom, EFormat format, int quantitySeat,int empty
         String[] itemInfo = line.split(",");
         ShowTime showTime = new ShowTime();

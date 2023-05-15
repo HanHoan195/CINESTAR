@@ -10,26 +10,19 @@ import service.ShowTimeService;
 import utils.DateUtils;
 import utils.ValidateShowTime;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
 public class ShowTimeView {
     private final String filePath = "D:\\CASE_MD2\\CINESTAR\\src\\main\\java\\data\\showtime.csv";
-//    private Menu menu ;
-//    private ShowTimeService showTimeService;
-//    private FilmView filmView;
-//    private ValidateShowTime validateShowTime;
-//    private FilmService filmService;
-//    private FileService fileService;
 
-
-//    public ShowTimeView()  {
-        ShowTimeService showTimeService = new ShowTimeService();
-//        filmView = new FilmView();
-        ValidateShowTime validateShowTime = new ValidateShowTime();
-        FilmService filmService = new FilmService();
-        FileService fileService = new FileService();
+    ShowTimeService showTimeService = new ShowTimeService();
+    //        filmView = new FilmView();
+    ValidateShowTime validateShowTime = new ValidateShowTime();
+    FilmService filmService = new FilmService();
+    FileService fileService = new FileService();
 
 //    }
 
@@ -52,6 +45,7 @@ public class ShowTimeView {
                 System.out.println("                        ╠═══════╠═══════╬══════════════════════════════╬═════════════════════╬═════════════════════╬════════╬════════╣");
             }
         }
+        // checkActionContinue();
     }
 
     public void displayListShowTimes(List<ShowTime> showTimes) {//hiển thị phim sau khi tìm kiếm
@@ -117,7 +111,7 @@ public class ShowTimeView {
         }
     }
 
-    public boolean checkBeforeSave(ShowTime showTime)  {//kiểm tra trước khi lưu
+    public boolean checkBeforeSave(ShowTime showTime) {//kiểm tra trước khi lưu
         Menu menu = new Menu();
         Scanner scanner = new Scanner(System.in);
         System.out.println("Vui lòng kiểm tra lại thông tin trước khi lưu!");
@@ -142,7 +136,7 @@ public class ShowTimeView {
                     break;
                 } else {
                     menu.manager();
-                   // showTimeService.deleteById(showTime.getId());
+                    // showTimeService.deleteById(showTime.getId());
                     break;
                 }
 
@@ -176,56 +170,61 @@ public class ShowTimeView {
         List<ShowTime> showTimes;
         //do {
 
-            //cập nhật thời gian chiếu(ok)
-            displayAllShowTimes();
-            boolean checkAction1 = true;
-            long idFilm = 0;
-            showTimes = showTimeService.getAllShowTimes();
+        //cập nhật thời gian chiếu(ok)
+        displayAllShowTimes();
+        boolean checkAction1 = true;
+        long idFilm = 0;
+        showTimes = showTimeService.getAllShowTimes();
 
-            do {
-                try {
-                    System.out.println("Vui lòng nhập ID cần cập nhật: ");
+        do {
+            try {
+                System.out.println("Vui lòng nhập IDShowtime cần cập nhật: ");
+                System.out.print(" \t☛ ");
+                idFilm = Long.parseLong(scanner.nextLine());
+                if (idFilm <= 0) {
+                    throw new NumberFormatException("ID phải lớn hơn hoặc bằng 0");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Id phải là một số lớn hơn 0!");
+            }
+            boolean existId = false;
+            for (ShowTime showTime1 : showTimes) {
+                if (showTime1.getId() == idFilm) {
+                    //showTime.setIdFilm(idFilm);
+                    existId = true;
+                    String start;
+                    System.out.println("Nhập thời gian theo định dạng: 'yyyy-MM-dd HH:mm'");
+                    System.out.println("VD: 2023-01-01 00:00");
                     System.out.print(" \t☛ ");
-                    idFilm = Long.parseLong(scanner.nextLine());
-                    if (idFilm <= 0) {
-                        throw new NumberFormatException("ID phải lớn hơn hoặc bằng 0");
-                    }
-                } catch (NumberFormatException e) {
-                    System.out.println("Id phải là một số lớn hơn 0!");
-                }
-                    boolean existId = false;
-                    for (ShowTime showTime1 : showTimes) {
-                        if (showTime1.getId() == idFilm) {
-                            //showTime.setIdFilm(idFilm);
-                            existId = true;
-                            String start;
-                            System.out.println("Nhập thời gian theo định dạng: 'yyyy-MM-dd HH:mm'");
-                            do {
-                                System.out.println("VD: 2023-01-01 00:00");
-                                start = scanner.nextLine();
-                                if (validateShowTime.checkEditShowTime(start, showTime1)) {
-                                    System.out.println("Không đúng định dạng hoặc đã trùng suất chiếu!");
-                                }
-                            } while (validateShowTime.checkEditShowTime(start, showTime1));
+                    do {
 
-                            Date startTime = DateUtils.parseDate(start);
-                            showTime1.setStartTime(startTime);
-
-                            long durationTime = filmService.findDurationTimeById(showTime1.getIdFilm());
-                            showTime1.setEndTime(DateUtils.plusTime(startTime, durationTime));
-
-                            checkBeforeSave(showTime1);
-                            break;
+                        start = scanner.nextLine();
+                        if (checkShowTimeBeforeNow(showTime)) {
+                            System.out.println("Không thể thêm suất chiếu vì thời gian bắt đầu trước thời điểm hiện tại!");
                         }
-                    }
-                if (!existId) {
-                    System.out.println("Không tìm thấy suất chiếu với ID : " + idFilm);
+                        if (validateShowTime.checkEditShowTime(start, showTime1)) {
+                            System.out.println("Không đúng định dạng hoặc đã trùng suất chiếu!");
+                        }
+                    } while (validateShowTime.checkEditShowTime(start, showTime1));
+
+                    Date startTime = DateUtils.parseDate(start);
+                    showTime1.setStartTime(startTime);
+
+                    long durationTime = filmService.findDurationTimeById(showTime1.getIdFilm());
+                    showTime1.setEndTime(DateUtils.plusTime(startTime, durationTime));
+
+                    checkBeforeSave(showTime1);
+                    break;
                 }
+            }
+            if (!existId) {
+                System.out.println("Không tìm thấy suất chiếu với ID : " + idFilm);
+            }
 
-            } while (!checkAction1);
+        } while (!checkAction1);
 
 
-       // } while (continueEdit);
+        // } while (continueEdit);
 
         fileService.writeData(filePath, showTimes);
 
@@ -243,7 +242,7 @@ public class ShowTimeView {
     }
 
 
-    public void addNewShowTime()  {//thêm tgian chiếu mới
+    public void addNewShowTime() {//thêm tgian chiếu mới
         Menu menu = new Menu();
         Scanner scanner = new Scanner(System.in);
         long id = System.currentTimeMillis() % 1000;
@@ -262,7 +261,7 @@ public class ShowTimeView {
             if (idFilm <= 0) {
                 throw new NumberFormatException();
             }
-        }  catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             System.out.println("ID phim không hợp lệ. Vui lòng nhập lại.");
             addNewShowTime();
             return;
@@ -274,30 +273,52 @@ public class ShowTimeView {
 
         showtime.setId(id);
         showtime.setIdFilm(idFilm);
+
+
         //start time, room
         String start;
         boolean checkStartTime = false;
         Date startTime;
         ERoom room;
-        do {
-            System.out.println("Enter start time (Please enter the correct format: 'year-month-day hour:minute')");
-            System.out.println("Ex: 2023-01-01 00:00");
-            start = scanner.nextLine();
-            renderRoom();
-            System.out.println("Chọn phòng chiếu:");
-            System.out.print(" \t☛ ");
-            long idRoom = Long.parseLong(scanner.nextLine());
-            room = ERoom.toERoom(idRoom);
-            startTime = DateUtils.parseDate(start);
-            showtime.setStartTime(startTime);
-            showtime.setIdRoom(room);
-            showtime.setEndTime(DateUtils.plusTime(startTime, filmService.findDurationTimeById(idFilm)));
 
-            checkStartTime = validateShowTime.checkNewValidateShowTime(start, showtime);
-            if (checkStartTime) {
-                System.out.println("Incorrect format or showtime already exists. Please re-enter");
+        do {
+            try {
+                System.out.println("Vui lòng nhập suất chiếu theo định dạng bên dưới:");
+                System.out.println("Ex: 2023-05-05 00:00");
+                System.out.print(" \t☛ ");
+                start = scanner.nextLine();
+
+
+                //chọn phòng
+                renderRoom();
+                System.out.println("Chọn phòng chiếu:");
+                System.out.print(" \t☛ ");
+                long idRoom = Long.parseLong(scanner.nextLine());
+                room = ERoom.toERoom(idRoom);
+
+
+                startTime = DateUtils.parseDate(start);
+                showtime.setStartTime(startTime);
+
+                checkStartTime = checkShowTimeBeforeNow(showtime);
+                if (checkStartTime) {
+                    System.out.println("Không thể thêm suất chiếu vì thời gian bắt đầu trước thời điểm hiện tại!");
+                    continue;
+                }
+
+                showtime.setIdRoom(room);
+                showtime.setEndTime(DateUtils.plusTime(startTime, filmService.findDurationTimeById(idFilm)));
+
+                checkStartTime = validateShowTime.checkNewValidateShowTime(start, showtime);
+                if (checkStartTime) {
+                    System.out.println("Không đúng định dạng vui lòng nhập lại!");
+                }
+            } catch (Exception e) {
+                System.out.println("Không đúng vui lòng nhập lại!");
             }
+
         } while (checkStartTime);
+
         //format
         renderFormatFilm();
         System.out.println("Chọn định dạng phim: ");
@@ -308,8 +329,10 @@ public class ShowTimeView {
         showTimeService.add(showtime);
         checkBeforeSave(showtime);
         checkActionContinue();
-        menu.menuManager();
+
     }
+
+
 
 
     public boolean checkActionContinue() {
@@ -339,7 +362,8 @@ public class ShowTimeView {
         Menu menu = new Menu();
         Scanner scanner = new Scanner(System.in);
         displayAllShowTimes();
-        System.out.println("Nhập ID muốn xóa: ");
+        System.out.println("Nhập ID Showtime bạn muốn xóa: ");
+        System.out.print("\t➥ ");
         long idShowtime = 0;
         try {
             idShowtime = Long.parseLong(scanner.nextLine());
@@ -359,26 +383,28 @@ public class ShowTimeView {
         }
 
         // Hiển thị thông báo xác nhận việc xóa
-        System.out.println("Bạn có chắc chắn muốn xóa suất chiếu này không? (Y/N)");
+
         if (confirmDelete()) {
             showTimeService.deleteById(idShowtime);
             System.out.println("Đã xóa suất chiếu có ID: " + idShowtime);
             displayAllShowTimes();
         }
-        checkActionContinue();
-        menu.menuManager();
+        //checkActionContinue();
+        //menu.menuManager();
     }
 
-    private boolean confirmDelete() {
+    public static boolean confirmDelete() {
         Menu menu = new Menu();
         Scanner scanner = new Scanner(System.in);
         String input;
+        System.out.println("Bạn có chắc chắn muốn xóa suất chiếu này không? (Y/N)");
+        System.out.print("\t➥ ");
+        input = scanner.nextLine().trim().toLowerCase();
         while (true) {
-            input = scanner.nextLine().trim().toLowerCase();
             if (input.equals("y")) {
                 return true;
             } else if (input.equals("n")) {
-                menu.menuManager();
+                menu.manageShowtime();
                 return false;
             } else {
                 System.out.println("Vui lòng nhập Y hoặc N");
@@ -412,19 +438,11 @@ public class ShowTimeView {
         System.out.println(" ⦿ Nếu hủy thao tác, quay lại menu thì nhập: \"0\" ⦿ ");
     }
 
-    public void menuUpdate() {
-        System.out.println("                                                ┌------CẬP NHẬT----------------------┐");
-        System.out.println("                                                |  [1] Cập nhật thời gian chiếu      |");
-        System.out.println("                                                |  [2] Cập nhât định dạng phim       |");
-        System.out.println("                                                |  [0] Quay lại                      |");
-        System.out.println("                                                └------------------------------------┘");
-        System.out.println();
-    }
 
     public static void main(String[] args) throws InstantiationException, IllegalAccessException {
         ShowTime showTime = new ShowTime();
         ShowTimeView showTimeView = new ShowTimeView();
-        showTimeView.editShowTime(showTime);
+        showTimeView.addNewShowTime();
         //showTimeView.displayAllShowTimes();
     }
 }

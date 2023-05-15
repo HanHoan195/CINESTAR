@@ -42,14 +42,5 @@ public class TicketService {
         ticketRepository.deleteById(ticket.getId());
     }
 
-//    public void addTicket(Ticket ticket) {
-//
-//        List<Ticket> tickets = fileService.readData(filePath);
-//        tickets.add(ticket);
-//        fileService.writeData(filePath, tickets);
-//    }
-//public static void main(String[] args) {
-//    TicketService t = new TicketService();
-//    System.out.println(t.getAllTickets().get(0));
-//}
+
 }

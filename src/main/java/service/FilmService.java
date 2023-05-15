@@ -1,8 +1,6 @@
 package service;
 
 import model.Film;
-import model.ShowTime;
-import repository.FileService;
 import repository.FilmRepository;
 import repository.FilmUpdateRepo;
 import utils.CSVUtils;
@@ -10,6 +8,7 @@ import utils.CSVUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class FilmService {
     List<Film> fimlList = new ArrayList<>();
@@ -44,8 +43,25 @@ public class FilmService {
         return filmRepository.findById(id).getName();
     }
 
-    public int checkIdFilm(long id) throws IOException {
+    public boolean checkIdFilm(long id) throws IOException {
         return filmRepository.checkID( id);
+    }
+    public void add(Film newFilm) {
+        fimlList.add(newFilm);
+        CSVUtils.write(path, fimlList);
+    }
+
+    public boolean existFilmName(String name){
+        getAllFilms();
+        for (Film film: fimlList){
+            if (film.getName().equals(name)){
+                return true;
+            }
+        }
+        return false;
+    }
+    public void deleteFilmById(long id) throws IOException {
+        filmRepository.deleteById(id);
     }
 
     public Film findById(long idFilm) {
@@ -58,6 +74,24 @@ public class FilmService {
         return null;
     }
 
+    public Film getFilmById(int id) {
+        fimlList = getAllFilms();
+        for (Film film : fimlList) {
+            if (film.getId() == id) {
+                return film;
+            }
+        }
+        return null;
+    }
+
+
+    public Film findFilmByName(String filmName) {
+        FilmService filmService = new FilmService();
+
+            return null; // Không tìm thấy phim có tên như vậy
+
+
+    }
 }
 
 

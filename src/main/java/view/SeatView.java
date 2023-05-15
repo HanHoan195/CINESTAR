@@ -90,7 +90,7 @@ public class SeatView {
         int col = room.getCol();
         int count = 0;
         System.out.println("\t\t\t╔═════════════════════════════════════════════════════════════════════════╗");
-        System.out.println("                                           MÀN HÌNH");
+        System.out.println("                 MÀN HÌNH");
         System.out.println();
         System.out.println();
         for (int i = 0; i < row; i++) {

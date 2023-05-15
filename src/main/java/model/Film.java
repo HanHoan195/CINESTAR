@@ -21,6 +21,13 @@ public class Film implements IModel<Film> {
         this.status = status;
     }
 
+    public Film(long id, String filmName, long durationTime, EType typeOfFilm) {
+        this.id = id;
+        this.filmName = filmName;
+        this.durationTime = durationTime;
+        this.typeOfFilm = typeOfFilm;
+    }
+
     public long getId() {
         return id;
     }
@@ -51,7 +58,7 @@ public class Film implements IModel<Film> {
         EStatus status = EStatus.getStatusByName(itemInfo[4]);
 
 
-        Film film = new Film(id,itemInfo[1],durationTime,typeOfFilm,status);
+        Film film = new Film(id,itemInfo[1],durationTime,typeOfFilm, status);
         return film;
     }
 
@@ -99,9 +106,18 @@ public class Film implements IModel<Film> {
         this.durationTime = durationTime;
     }
 
+
     public String toView() {
-        return String.format("                        ║ %-5s ║ %-29s║ %-14s ║ %-13s ║ %-14s║",
-                id, filmName, durationTime + " minutes", typeOfFilm, status);
+        return String.format("                        ║ %-5s ║ %-29s║ %-14s ║ %-13s ║",
+                id, filmName, durationTime + " minutes", typeOfFilm);
     }
+    public String toString() {
+        return String.format("%s,%s,%s,%s,%s", id,filmName,durationTime,typeOfFilm,status);
+    }
+
+
+//    public String addFilm() {
+//
+//    }
 }
 

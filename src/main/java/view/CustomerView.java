@@ -136,14 +136,6 @@ public class CustomerView {
             }
         } while (loop == true);
 
-//        for (EGender e : EGender.values()) {
-//            System.out.printf("%s     nhấn \"%s\" ", e, e.getId());
-//            System.out.println();
-//        }
-//        System.out.print("\t➥ ");
-//        int gender = Integer.parseInt(scanner.nextLine());
-//        EGender eGender = EGender.toGender(gender);
-
 
         System.out.println("Nhập địa chỉ:");
         System.out.print("\t➥ ");
@@ -152,7 +144,7 @@ public class CustomerView {
 
         String phone = checkExistPhoneNumber();
 
-//        Role role = Role.getRoleByName("CUSTOMER");
+
         Role role = Role.CUSTOMER;
 
         user.setId(id);
@@ -202,7 +194,7 @@ public class CustomerView {
         switch (choice) {
             case "Y":
                 OrderView orderView = new OrderView();
-                orderView.addNewOrder();
+                orderView.addNewTicket();
                 break;
             case "N":
                 menuCustomer();
@@ -218,7 +210,7 @@ public class CustomerView {
         do {
             checkNumber = true;
             System.out.println("Nhập SĐT: ");
-            System.out.println("SĐT bắt đầu bằng \"0\" và có 9-10 số!");
+            System.out.println("SĐT bắt đầu bằng \"0\" và có 10 số!");
             System.out.print("\t➥ ");
             number = scanner.nextLine();
             if (!ValidateUtils.isPhoneNumber(number)) {

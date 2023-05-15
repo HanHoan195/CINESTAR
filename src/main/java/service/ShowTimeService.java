@@ -19,8 +19,8 @@ public class ShowTimeService extends FileContext<ShowTime> {
 
     List<ShowTime> showTimeList = new ArrayList<>();
 
-    public ShowTimeService()  {
-        showTimeRepository =new ShowTimeRepository();
+    public ShowTimeService() {
+        showTimeRepository = new ShowTimeRepository();
         filmService = new FilmService();
         ticketService = new TicketService();
         seatService = new SeatService();
@@ -30,6 +30,7 @@ public class ShowTimeService extends FileContext<ShowTime> {
         List<ShowTime> showTimeList = showTimeRepository.getAll();
         return showTimeList;
     }
+
     public void add(ShowTime showTime) {
         showTimeRepository.add(showTime);
     }
@@ -73,6 +74,10 @@ public class ShowTimeService extends FileContext<ShowTime> {
 
     public long findFilmByShowTimeId(long idShowTime) {
         ShowTime showTime = findById(idShowTime);
+//        long idFilm = 0;
+//        if(showTime != null) {
+//            idFilm = showTime.getIdFilm();
+//        }
         long idFilm = showTime.getIdFilm();
         return idFilm;
     }
@@ -108,13 +113,13 @@ public class ShowTimeService extends FileContext<ShowTime> {
         showTimeRepository.addList(list);
     }
 
-    public boolean existRoom(long idRoom){
-       //getAllShowTimes();
+    public boolean existRoom(long idRoom) {
+        //getAllShowTimes();
         showTimeList = getAllShowTimes();
-        for (ShowTime showTime : showTimeList ) {
-                if (showTime.getIdRoom().getId()==idRoom) {
-                    return true;
-                }
+        for (ShowTime showTime : showTimeList) {
+            if (showTime.getIdRoom().getId() == idRoom) {
+                return true;
+            }
         }
         return false;
     }

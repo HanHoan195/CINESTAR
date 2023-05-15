@@ -1,9 +1,14 @@
 package model;
 
+
 import repository.IModel;
+import service.FilmService;
+import service.OrderService;
 import service.TicketService;
+import utils.CurrencyFormat;
 import utils.DateUtils;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -13,7 +18,8 @@ public class Order implements IModel<Order> {
     private String customerName;
     private double total;
     private Date createDate;
-    private List<Ticket> orderitemList;
+    private List<Ticket> orderitemList ;
+    FilmService filmService = new FilmService();
 
     public Order() {
 
@@ -86,13 +92,18 @@ public class Order implements IModel<Order> {
     }
 
     public List<Ticket> getOrderitemList() {
-        return orderitemList;
+        TicketService ticketService = new TicketService();
+        List<Ticket> ticketList;
+        return ticketList = ticketService.getAllTickets();
     }
 
     public void setOrderitemList(List<Ticket> orderitemList) {
         this.orderitemList = orderitemList;
     }
 
+    public void addTicket(Ticket ticket) {
+        orderitemList.add(ticket);
+    }
     @Override
     public long getId() {
         return id;
@@ -143,9 +154,14 @@ public class Order implements IModel<Order> {
         return String.format("                        ║%7s║%-30s║%-20s║%-20s║%-7s║",
                 this.id, this.customerName, amountTicket, this.total, create);
     }
+    public String oderView(long id) {
+
+        return String.format("            ║ %-30s║ %19s ║ %14s ║", filmService.getFilmById(id).getFilmName() ,  DateUtils.convertDateToString(this.createDate), CurrencyFormat.covertPriceToString(this.total));
+    }
 
     @Override
     public String toString() {
+
         String date = DateUtils.convertDateToString(this.createDate);
         return String.format("%s,%s,%s,%s,%s", this.id, this.idCustomer, this.customerName, this.total, date);
     }
