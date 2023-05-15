@@ -76,6 +76,7 @@ public class FilmView {
 //
 //    }
     public void getRevenueOfFilm() {
+        FilmService filmService = new FilmService();
         List<Double> revenue = new ArrayList<>();
         double total = 0;
 

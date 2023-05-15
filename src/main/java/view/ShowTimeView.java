@@ -9,7 +9,9 @@ import service.FilmService;
 import service.ShowTimeService;
 import utils.DateUtils;
 import utils.ValidateShowTime;
+import utils.ValidateUtils;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
@@ -243,93 +245,125 @@ public class ShowTimeView {
 
 
     public void addNewShowTime() {//thêm tgian chiếu mới
-        Menu menu = new Menu();
         Scanner scanner = new Scanner(System.in);
         long id = System.currentTimeMillis() % 1000;
-        displayAllShowTimes();
+               displayAllShowTimes();
         //long id, long idFilm, Date startTime, ERoom idRoom, EType type
         ShowTime showtime = new ShowTime();
-        System.out.println("Vui lòng nhập ID phim: ");
-        System.out.print(" \t☛ ");
         long idFilm = 0;
-        try {
-            idFilm = Long.parseLong(scanner.nextLine());
-            Film film = filmService.findById(idFilm);
-            if (film == null) {
-                throw new NullPointerException();
-            }
-            if (idFilm <= 0) {
-                throw new NumberFormatException();
-            }
-        } catch (NumberFormatException e) {
-            System.out.println("ID phim không hợp lệ. Vui lòng nhập lại.");
-            addNewShowTime();
-            return;
-        } catch (NullPointerException e) {
-            System.out.println("ID phim không tồn tại. Vui lòng nhập lại.");
-            addNewShowTime();
-            return;
-        }
+        boolean checkID = false;
 
-        showtime.setId(id);
-        showtime.setIdFilm(idFilm);
+        do {
+            System.out.println("chọn ID phim:");
+            System.out.print(" \t☛ ");
+            try {
+                idFilm = Long.parseLong(scanner.nextLine());
+                if (idFilm > 0) {
+                    if (filmService.checkIdFilm(idFilm)) {
+                        showtime.setId(id);
+                        showtime.setIdFilm(idFilm);
+                    } else {
+                        System.out.println("ID phim không tồn tại!");
+                        addNewShowTime();
+                    }
+                } else {
+                    addNewShowTime();
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Không đúng.Vui lòng nhập lại!");
+                addNewShowTime();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } while (checkID);
+
 
 
         //start time, room
+
+
         String start;
         boolean checkStartTime = false;
         Date startTime;
         ERoom room;
+        do {
+            System.out.println("Nhập thời gian chiếu theo format : 'year-month-day hour:minute')");
+            System.out.println("VD: 2023-05-05 19:05");
+            System.out.print(" \t☛ ");
+            start = scanner.nextLine();
+
+            checkStartTime = ValidateUtils.isShowTime(start);
+            if (!checkStartTime) {
+                System.out.println("Không hợp lệ. Vui lòng nhập lại!");
+                addNewShowTime();
+            }
+
+
+            startTime = DateUtils.parseDate(start);
+            showtime.setStartTime(startTime);
+            checkStartTime = checkShowTimeBeforeNow(showtime);
+            if (checkStartTime) {
+                System.out.println("Không thể thêm suất chiếu vì thời gian bắt đầu trước thời điểm hiện tại!");
+                continue;
+            }
+        } while (checkStartTime );
+
+
+            renderRoom();
+        boolean checkIDRoom;
+        do {
+            System.out.println("Nhập ID phòng:");
+            System.out.print(" \t☛ ");
+            try {
+                long idRoom = Long.parseLong(scanner.nextLine());
+                if (idRoom > 0) {
+                    room = ERoom.toERoom(idRoom);
+                    showtime.setIdRoom(room);
+                    showtime.setEndTime(DateUtils.plusTime(startTime, filmService.findDurationTimeById(idFilm)));
+                    checkIDRoom = validateShowTime.checkNewValidateShowTime(start, showtime);
+                    if (!checkIDRoom) {
+                        System.out.println("Không đúng. Vui lòng nhập lại!");
+                    }
+                } else {
+                    System.out.println("Không đúng. Vui lòng nhập lại!");
+                    checkIDRoom = true;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Không đúng. Vui lòng nhập lại!");
+                checkIDRoom = true;
+            }
+        } while (checkIDRoom);
+
+
+
+
+
+
+        //format
+        boolean checkFormat = false;
+        renderFormatFilm();
 
         do {
             try {
-                System.out.println("Vui lòng nhập suất chiếu theo định dạng bên dưới:");
-                System.out.println("Ex: 2023-05-05 00:00");
+                System.out.println("Nhập ID định dạng:");
                 System.out.print(" \t☛ ");
-                start = scanner.nextLine();
-
-
-                //chọn phòng
-                renderRoom();
-                System.out.println("Chọn phòng chiếu:");
-                System.out.print(" \t☛ ");
-                long idRoom = Long.parseLong(scanner.nextLine());
-                room = ERoom.toERoom(idRoom);
-
-
-                startTime = DateUtils.parseDate(start);
-                showtime.setStartTime(startTime);
-
-                checkStartTime = checkShowTimeBeforeNow(showtime);
-                if (checkStartTime) {
-                    System.out.println("Không thể thêm suất chiếu vì thời gian bắt đầu trước thời điểm hiện tại!");
-                    continue;
+                long idFormat = Long.parseLong(scanner.nextLine());
+                if (idFormat >= 0) {
+                    EFormat format = EFormat.toFormat(idFormat);
+                    showtime.setFormat(format);
+                    showTimeService.add(showtime);
+                    checkFormat = true; // Đặt lại biến kiểm tra thành true để thoát khỏi vòng lặp
+                } else {
+                    System.out.println("ID định dạng không hợp lệ. Vui lòng nhập lại!");
                 }
-
-                showtime.setIdRoom(room);
-                showtime.setEndTime(DateUtils.plusTime(startTime, filmService.findDurationTimeById(idFilm)));
-
-                checkStartTime = validateShowTime.checkNewValidateShowTime(start, showtime);
-                if (checkStartTime) {
-                    System.out.println("Không đúng định dạng vui lòng nhập lại!");
-                }
-            } catch (Exception e) {
-                System.out.println("Không đúng vui lòng nhập lại!");
+            } catch (NumberFormatException e) {
+                System.out.println("Không đúng. Vui lòng nhập lại!");
             }
+        } while (!checkFormat);
 
-        } while (checkStartTime);
 
-        //format
-        renderFormatFilm();
-        System.out.println("Chọn định dạng phim: ");
-        System.out.print(" \t☛ ");
-        long idFormat = Long.parseLong(scanner.nextLine());
-        EFormat format = EFormat.toFormat(idFormat);
-        showtime.setFormat(format);
-        showTimeService.add(showtime);
+
         checkBeforeSave(showtime);
-        checkActionContinue();
-
     }
 
 

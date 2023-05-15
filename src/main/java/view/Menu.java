@@ -150,7 +150,7 @@ public class Menu {
                 int choice = scanner1.nextInt();
                 switch (choice) {
                     case 1:
-                        //hiện thị danh sách phim (ok)
+                        // (ok)
                         manageFilm();
                         //menuManager();
                         break;
@@ -161,8 +161,8 @@ public class Menu {
                         break;
                     case 3:
                         //xem doanh thu(ok)
-                        AdminView adminView = new AdminView();
-                        adminView.launcherRevenue();
+                        FilmView filmView1 = new FilmView();
+                        filmView1.getRevenueOfFilm();
                         break;
                     case 4:
                         //quay lại(ok)
@@ -237,7 +237,6 @@ public class Menu {
             System.out.print("\t➥ ");
             try {
                 int choice = Integer.parseInt(scanner1.nextLine());
-                if (choice > 0) {
                     switch (choice) {
                         case 1:
                             showTimeView.displayAllShowTimes();
@@ -259,9 +258,7 @@ public class Menu {
                         default:
                             System.out.println("Không đúng.Vui lòng nhập lại!");
                     }
-                } else {
-                    System.out.println("Lựa chọn phải lớn hơn \"0\"");
-                }
+
             } catch (NumberFormatException e) {
                 System.out.println("Không đúng.Vui lòng nhập lại!");
             }
