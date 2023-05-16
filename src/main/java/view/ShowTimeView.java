@@ -17,6 +17,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
+
+import static view.Menu.manageShowtime;
+import static view.Menu.menuManageFilm;
+
 public class ShowTimeView {
     private final String filePath = "D:\\CASE_MD2\\CINESTAR\\src\\main\\java\\data\\showtime.csv";
 
@@ -50,21 +54,6 @@ public class ShowTimeView {
         // checkActionContinue();
     }
 
-    public void displayListShowTimes(List<ShowTime> showTimes) {//hiển thị phim sau khi tìm kiếm
-        System.out.println("                        ╔═══════╦══════════════════════════════╦═════════════════════╦═════════════════════╦════════╦════════╗");
-        System.out.printf("                        ║  %-4s ║ %-29s║ %-20s║ %-20s║ %-7s║ %-7s║", "ID", "Film Name", "Start Time", "End Time", "Room", "Format");
-        System.out.println();
-        System.out.println("                        ╠═══════╬══════════════════════════════╬═════════════════════╬═════════════════════╬════════╬════════╣");
-        for (int i = 0; i < showTimes.size(); i++) {
-            if (i == (showTimes.size() - 1)) {
-                System.out.println(showTimes.get(i).toView());
-                System.out.println("                        ╚═══════╩══════════════════════════════╩═════════════════════╩═════════════════════╩════════╩════════╝");
-            } else {
-                System.out.println(showTimes.get(i).toView());
-                System.out.println("                        ╠═══════╬══════════════════════════════╬═════════════════════╬═════════════════════╬════════╬════════╣");
-            }
-        }
-    }
 
     public void displayShowTime(ShowTime showTime) {//hiển thị tgian chiếu
         System.out.println("                        ╔═══════╔═══════╦══════════════════════════════╦═════════════════════╦═════════════════════╦════════╦════════╗");
@@ -134,7 +123,7 @@ public class ShowTimeView {
                 System.out.print("\t➥ ");
                 int choose = Integer.parseInt(scanner.nextLine());
                 if (choose == 1) {
-                    editShowTime(showTime);
+                    addNewShowTime();
                     break;
                 } else {
                     menu.manager();
@@ -320,8 +309,10 @@ public class ShowTimeView {
                     room = ERoom.toERoom(idRoom);
                     showtime.setIdRoom(room);
                     showtime.setEndTime(DateUtils.plusTime(startTime, filmService.findDurationTimeById(idFilm)));
+                    showtime.setQuantitySeat(room.getAmountSeat());
+                    showtime.setEmptySeat(room.getAmountSeat());
                     checkIDRoom = validateShowTime.checkNewValidateShowTime(start, showtime);
-                    if (!checkIDRoom) {
+                    if (checkIDRoom) {
                         System.out.println("Không đúng. Vui lòng nhập lại!");
                     }
                 } else {
@@ -351,7 +342,7 @@ public class ShowTimeView {
                 if (idFormat >= 0) {
                     EFormat format = EFormat.toFormat(idFormat);
                     showtime.setFormat(format);
-                    showTimeService.add(showtime);
+
                     checkFormat = true; // Đặt lại biến kiểm tra thành true để thoát khỏi vòng lặp
                 } else {
                     System.out.println("ID định dạng không hợp lệ. Vui lòng nhập lại!");
@@ -364,6 +355,7 @@ public class ShowTimeView {
 
 
         checkBeforeSave(showtime);
+        showTimeService.add(showtime);
     }
 
 
@@ -396,11 +388,18 @@ public class ShowTimeView {
         Menu menu = new Menu();
         Scanner scanner = new Scanner(System.in);
         displayAllShowTimes();
-        System.out.println("Nhập ID Showtime bạn muốn xóa: ");
+        System.out.println("Nhập ID Showtime bạn muốn xóa hoặc nhập '0' để quay lại menu: ");
         System.out.print("\t➥ ");
         long idShowtime = 0;
+
         try {
             idShowtime = Long.parseLong(scanner.nextLine());
+            switch ((int) idShowtime) {
+                case 0:
+                manageShowtime();
+                break;
+            }
+
         } catch (NumberFormatException e) {
             System.out.println("ID không hợp lệ Vui lòng nhập lại!");
             deleteShowTime();
@@ -431,10 +430,11 @@ public class ShowTimeView {
         Menu menu = new Menu();
         Scanner scanner = new Scanner(System.in);
         String input;
-        System.out.println("Bạn có chắc chắn muốn xóa suất chiếu này không? (Y/N)");
-        System.out.print("\t➥ ");
-        input = scanner.nextLine().trim().toLowerCase();
+
         while (true) {
+            System.out.println("Bạn có chắc chắn muốn xóa suất chiếu này không? (Y/N)");
+            System.out.print("\t➥ ");
+            input = scanner.nextLine().trim().toLowerCase();
             if (input.equals("y")) {
                 return true;
             } else if (input.equals("n")) {
@@ -473,10 +473,5 @@ public class ShowTimeView {
     }
 
 
-    public static void main(String[] args) throws InstantiationException, IllegalAccessException {
-        ShowTime showTime = new ShowTime();
-        ShowTimeView showTimeView = new ShowTimeView();
-        showTimeView.addNewShowTime();
-        //showTimeView.displayAllShowTimes();
-    }
+
 }

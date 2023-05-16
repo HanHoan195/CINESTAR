@@ -11,8 +11,12 @@ public class ValidateUtils {
     public static final String MONTH_REGEX = "^([12]\\d{3}-(0[1-9]|1[0-2]))$";
     public static final String YEAR_REGEX = "^(19|[2-9][0-9])\\d{2}$";
     public static final String SHOWTIME_REGEX = "^\\d{4}-\\d{2}-\\d{2}\\s\\d{2}:\\d{2}$";
+    public static final String SEAT_REGEX = "^[abcd][1234]$";
 
 
+    public static boolean isSEAT(String seat) {
+        return Pattern.matches(SEAT_REGEX,seat);
+    }
     public static boolean isMonth(String month) {
         return Pattern.matches(MONTH_REGEX,month);
     }

@@ -215,7 +215,7 @@ public class OrderView {
 
         } while (!emptySeat);
 
-        String seat;
+        String seatInput;
         count = 0;
         long idSeat;
 
@@ -225,12 +225,29 @@ public class OrderView {
             } else {
                 seatView.displayRoomByShowTime(showTimeService.findById(idShowTime));
             }
+            ShowTime showTime = showTimeService.findById(idShowTime);
+            List<Seat> seats = seatService.getSeatsByIdRoom(showTime.getIdRoom());
 
-            System.out.println("Vui lòng chọn ghế: ");
-            System.out.print("\t➥ ");
-            seat = scanner.nextLine().toUpperCase();
 
-            if (!checkOccupiedSeat(idShowTime, seat)) {
+            int checkSeat;
+            do {
+                System.out.println("Vui lòng chọn ghế: ");
+                System.out.print("\t➥ ");
+
+                seatInput = scanner.nextLine().toUpperCase();
+                checkSeat = 0;
+                for (Seat seat : seats) {
+                    if (seatInput.equalsIgnoreCase(seat.getPosition())) {
+                        checkSeat = 1;
+                    }
+                }
+                if (checkSeat == 0) {
+                    continue;
+                }
+            } while (checkSeat == 0);
+
+
+            if (!checkOccupiedSeat(idShowTime, seatInput)) {
                 System.out.println("Ghế đã được chọn!Vui lòng chọn lại!");
             }
 
@@ -243,7 +260,7 @@ public class OrderView {
                 }
             }
 
-        } while (!checkOccupiedSeat(idShowTime, seat));
+        } while (!checkOccupiedSeat(idShowTime, seatInput));
 
         System.out.println("Nhập '0' để hủy vé hoặc nhấn phím bất kỳ để xác nhận việc chọn vé!");
         System.out.print("\t➥ ");
@@ -260,7 +277,7 @@ public class OrderView {
 
 
         ERoom room = showTimeService.findById(idShowTime).getIdRoom();
-        idSeat = seatService.getIdSeatByRoom(seat, showTimeService.findById(idShowTime));
+        idSeat = seatService.getIdSeatByRoom(seatInput, showTimeService.findById(idShowTime));
 
 
 
@@ -438,10 +455,7 @@ public class OrderView {
     }
 
 
-    public static void main(String[] args) {
-        OrderView orderView = new OrderView();
-        orderView.showRevenueByYear();
-    }
+
 
     public void showRevenueByYear() {
         AdminView adminView = new AdminView();

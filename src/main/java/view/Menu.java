@@ -186,7 +186,7 @@ public class Menu {
 
     }
 
-    private static void manageFilm() throws IOException {
+    static void manageFilm() throws IOException {
         FilmView filmView = new FilmView();
         int choice = 0;
 
@@ -208,7 +208,7 @@ public class Menu {
                             showTimeView.checkActionContinue();
                             break;
                         case 3:
-                            filmView.deleteFilm();//chưa xóa đc
+                            filmView.deleteFilm();//ok
                             //showTimeView.checkActionContinue();
                             break;
                         case 4:
@@ -239,7 +239,7 @@ public class Menu {
                 int choice = Integer.parseInt(scanner1.nextLine());
                     switch (choice) {
                         case 1:
-                            showTimeView.displayAllShowTimes();
+                            showTimeView.displayAllShowTimes();//ok
                             showTimeView.checkActionContinue();
                             break;
                         case 2:
@@ -302,22 +302,26 @@ public class Menu {
                     menuCustomer();
                     break;
                 case 2:
-                    System.out.println("Bạn đã có tài khoản: Y/N");
-                    System.out.print("\t➥ ");
-                    String choice1 = scanner.nextLine().toUpperCase();
-                    switch (choice1) {
-                        case "Y":
-                            orderView.addNewOrder();
-                            break;
-                        case "N":
-                            System.out.println("Vui lòng đăng ký tài khoản: ");
-                            customerView.addNewCustomer();
-                            break;
 
-                        default:
-                            System.out.println("Không đúng.Vui lòng nhập lại!");
-                            break;
-                    }
+                    do {
+                        System.out.println("Bạn đã có tài khoản: Y/N");
+                        System.out.print("\t➥ ");
+                        String choice1 = scanner.nextLine().toUpperCase();
+                        switch (choice1) {
+                            case "Y":
+                                orderView.addNewOrder();
+                                break;
+                            case "N":
+                                System.out.println("Vui lòng đăng ký tài khoản: ");
+                                customerView.addNewCustomer();
+                                break;
+
+                            default:
+                                System.out.println("Không đúng.Vui lòng nhập lại!");
+                                break;
+                        }
+                    } while (true);
+
                 case 3:
                     exit();
                     break;
@@ -328,8 +332,5 @@ public class Menu {
     }
 
 
-    public static void main(String[] args) {
-        Menu menu = new Menu();
-        menu.manager();
-    }
+
 }

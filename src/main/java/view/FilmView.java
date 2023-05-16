@@ -297,17 +297,23 @@ public class FilmView {
     }
 
     public void deleteFilm() throws IOException {
+        Menu menu = new Menu();
         ShowTimeView showTimeView1 = new ShowTimeView();
         Scanner scanner1 = new Scanner(System.in);
         showAllFilms();
 
 
-        System.out.println("Nhập ID muốn xóa: ");
+        System.out.println("Nhập ID muốn xóa hoặc nhập '0' để quay lại menu: ");
         System.out.print("\t➥ ");
         long idFilm = 0;
 
         try {
             idFilm = Long.parseLong(scanner1.nextLine());
+            switch ((int) idFilm) {
+                case 0:
+                    menu.manageFilm();
+                    break;
+            }
         } catch (NumberFormatException e) {
             System.out.println("ID không hợp lệ Vui lòng nhập lại!");
             deleteFilm();
@@ -340,10 +346,7 @@ public class FilmView {
 
     }
 
-    public static void main(String[] args) throws IOException {
-        FilmView filmView1 = new FilmView();
-        filmView1.getRevenueOfFilm();
-    }
+
 
 
 }

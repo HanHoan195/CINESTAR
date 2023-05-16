@@ -119,21 +119,29 @@ public class CustomerView {
             System.out.println("2. Female");
             System.out.println("3. Other");
             System.out.print("\t➥ ");
-            gender = Integer.parseInt(scanner.nextLine());
-            switch (gender){
-                case 1:
-                    user.setGender(EGender.MALE);
-                    break;
-                case 2:
-                    user.setGender(EGender.FEMALE);
-                    break;
-                case 3:
-                    user.setGender(EGender.OTHER);
-                    break;
-                default:
-                    System.out.println("VUi lòng nhập lại");
-                    loop = true;
+
+            try {
+                gender = Integer.parseInt(scanner.nextLine());
+                switch (gender){
+                    case 1:
+                        user.setGender(EGender.MALE);
+                        break;
+                    case 2:
+                        user.setGender(EGender.FEMALE);
+                        break;
+                    case 3:
+                        user.setGender(EGender.OTHER);
+                        break;
+                    default:
+                        System.out.println("VUi lòng nhập lại");
+                        loop = true;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Không đúng. Vui lòng nhập lại!");
+                loop = true;
             }
+
+
         } while (loop == true);
 
 
@@ -251,9 +259,5 @@ public class CustomerView {
         }
     }
 
-    public static void main(String[] args) {
-        CustomerView customerView = new CustomerView();
-        customerView.addNewCustomer();
 
-    }
 }
