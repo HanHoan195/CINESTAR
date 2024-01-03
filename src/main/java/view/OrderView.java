@@ -161,7 +161,6 @@ public class OrderView {
                     return true;
                 case "N":
                     return false;
-
                 default:
                     checkContinue = true;
             }
@@ -170,6 +169,7 @@ public class OrderView {
     }
 
     public Ticket addNewTicket() { //thêm vé
+        Menu menu = new Menu();
         ShowTimeView showTimeView = new ShowTimeView();
         Ticket ticket = new Ticket();
         long id = System.currentTimeMillis() % 1000;
@@ -180,9 +180,13 @@ public class OrderView {
 
         do {
             try {
-                System.out.println("Chọn ID suất chiếu bạn muốn mua vé:");
+                System.out.println("Chọn ID suất chiếu bạn muốn mua vé hoặc nhập '0' để quay về menu:");
                 System.out.print("\t➥ ");
                 idShowTime = Long.parseLong(scanner.nextLine());
+
+                if (idShowTime == 0) {
+                    menu.customer();
+                }
 
                 if (idShowTime < 0) {
                     throw new InputMismatchException();
@@ -231,10 +235,14 @@ public class OrderView {
 
             int checkSeat;
             do {
-                System.out.println("Vui lòng chọn ghế: ");
+                System.out.println("Vui lòng chọn ghế hoặc nhập '0' để quay về menu: ");
                 System.out.print("\t➥ ");
 
                 seatInput = scanner.nextLine().toUpperCase();
+                if (seatInput.equals("0") ) {
+                    menu.customer();
+                }
+
                 checkSeat = 0;
                 for (Seat seat : seats) {
                     if (seatInput.equalsIgnoreCase(seat.getPosition())) {

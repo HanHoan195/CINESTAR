@@ -2,7 +2,6 @@ package service;
 
 import model.Film;
 import repository.FilmRepository;
-import repository.FilmUpdateRepo;
 import utils.CSVUtils;
 
 import java.io.IOException;
@@ -15,20 +14,20 @@ public class FilmService {
     public static String path = "D:\\CASE_MD2\\CINESTAR\\src\\main\\java\\data\\listphim.csv";
 
     private FilmRepository filmRepository;
-    private FilmUpdateRepo filmUpdateRepo;
+//    private FilmUpdateRepo filmUpdateRepo;
 
     public FilmService() {
         filmRepository = new FilmRepository();
-        filmUpdateRepo = new FilmUpdateRepo();
+//        filmUpdateRepo = new FilmUpdateRepo();
     }
 
     public List<Film> getAllFilms() {
         return filmRepository.getAll();
     }
 
-    public List<Film> getAllFilmsUpdate() {
-        return filmUpdateRepo.getAll();
-    }
+//    public List<Film> getAllFilmsUpdate() {
+//        return filmUpdateRepo.getAll();
+//    }
 
     public Film getFilmById(long id) {
         return filmRepository.findById(id);
@@ -48,7 +47,8 @@ public class FilmService {
     }
     public void add(Film newFilm) {
         fimlList.add(newFilm);
-        CSVUtils.write(path, fimlList);
+//        CSVUtils.write(path, fimlList);
+        CSVUtils.writeFilm(path, newFilm);
     }
 
     public boolean existFilmName(String name){

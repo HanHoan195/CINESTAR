@@ -49,7 +49,7 @@ public class Film implements IModel<Film> {
     }
 
     @Override
-    public Film parseData(String line) {
+        public Film parseData(String line) {
         //Film film = new Film();
         String [] itemInfo = line.split(",");
         long id = Long.parseLong(itemInfo[0]);

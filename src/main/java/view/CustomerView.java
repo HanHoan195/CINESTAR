@@ -90,7 +90,7 @@ public class CustomerView {
         User user = new User();
         long id = System.currentTimeMillis() % 1000;
 
-        System.out.println("Nhập tên khách hàng:");
+        System.out.println("Nhập tên khách hàng :");
         System.out.print("\t➥ ");
         String name = scanner.nextLine().toUpperCase();
 
@@ -168,7 +168,7 @@ public class CustomerView {
         displayUser(user);
 
         while (true) {
-            System.out.println("Bạn có muốn lưu thông tin khách hàng này không? Y/N");
+            System.out.println("Bạn có muốn lưu thông tin này không? Y/N");
             System.out.print("\t➥ ");
             String choice = scanner.nextLine().toUpperCase();
             if (choice.equals("Y")) {

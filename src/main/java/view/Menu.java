@@ -65,7 +65,8 @@ public class Menu {
         System.out.println("\t\t\t╔══════WELCOME TO CINESTAR══════════════════════╗");
         System.out.println("\t\t\t║    [1] Hiển thị danh sách suất chiếu          ║ ");
         System.out.println("\t\t\t║    [2] Đặt vé xem phim                        ║ ");
-        System.out.println("\t\t\t║    [3] Thoát                                  ║ ");
+        System.out.println("\t\t\t║    [3] Quay về                                ║ ");
+        System.out.println("\t\t\t║    [4] Thoát                                  ║ ");
         System.out.println("\t\t\t╚═══════════════════════════════════════════════╝");
         System.out.println();
     }
@@ -157,16 +158,19 @@ public class Menu {
 
                     case 2:
                         manageShowtime();
-                        //showTimeView.checkActionContinue();
+                        //
                         break;
                     case 3:
                         //xem doanh thu(ok)
                         FilmView filmView1 = new FilmView();
                         filmView1.getRevenueOfFilm();
+                        manager();
+
                         break;
                     case 4:
                         //quay lại(ok)
-                        menuMain();
+                        Menu menu= new Menu();
+                        menu.action();
                         break;
                     case 0:
                         //thoát(ok)
@@ -303,6 +307,7 @@ public class Menu {
                     break;
                 case 2:
 
+                    boolean continueLoop = true;
                     do {
                         System.out.println("Bạn đã có tài khoản: Y/N");
                         System.out.print("\t➥ ");
@@ -310,19 +315,25 @@ public class Menu {
                         switch (choice1) {
                             case "Y":
                                 orderView.addNewOrder();
+                                continueLoop = false; // Thoát khỏi vòng lặp
                                 break;
                             case "N":
                                 System.out.println("Vui lòng đăng ký tài khoản: ");
                                 customerView.addNewCustomer();
+                                continueLoop = false; // Thoát khỏi vòng lặp
                                 break;
-
                             default:
                                 System.out.println("Không đúng.Vui lòng nhập lại!");
                                 break;
                         }
-                    } while (true);
+                    } while (continueLoop);
 
                 case 3:
+                    Menu menu = new Menu();
+                    menu.action();
+                    break;
+
+                case 4:
                     exit();
                     break;
             }

@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FileContext<T extends IModel> {
+    //  filePath = "D:\\CASE_MD2\\CINESTAR\\src\\main\\java\\data\\listphim.csv";
+    //        tClass = Film.class;
+    //    }
     protected Class<T> tClass;
     protected String filePath;
     private FileService fileService;

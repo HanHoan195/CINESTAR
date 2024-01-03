@@ -91,48 +91,20 @@ public class FilmView {
         System.out.printf("                                                ║ %-29s║ %14s ║", "Film Name", "Revenue");
         System.out.println();
         System.out.println("                                                ╠══════════════════════════════╬════════════════╣");
-        for (int i = 0; i < revenue.size(); i++) {
-            if (i == revenue.size() - 1) {
-                System.out.printf("                                                ║ %-29s║ %14s ║", filmService.getFilmById(i + 1).getFilmName(), CurrencyFormat.covertPriceToString(revenue.get(i))).println();
+        int i = 0;
+        for (Film film: films) {
+            System.out.printf("                                                ║ %-29s║ %14s ║", film.getFilmName(), CurrencyFormat.covertPriceToString(revenue.get(i))).println();
                 System.out.println("                                                ╠══════════════════════════════╬════════════════╣");
-                System.out.printf("                                                ║ %-29s║ %14s ║", "TOTAL", CurrencyFormat.covertPriceToString(total)).println();
-                System.out.println("                                                ╚══════════════════════════════╩════════════════╝");
-            } else {
-                System.out.printf("                                                ║ %-29s║ %14s ║", filmService.getFilmById(i + 1).getFilmName(), CurrencyFormat.covertPriceToString(revenue.get(i))).println();
-                System.out.println("                                                ╠══════════════════════════════╬════════════════╣");
-            }
+                i++;
         }
+        System.out.printf("                                                ║ %-29s║ %14s ║", "TOTAL", CurrencyFormat.covertPriceToString(total)).println();
+        System.out.println("                                                ╚══════════════════════════════╩════════════════╝");
+
         System.out.println();
         System.out.println();
     }
 
 
-//public Film getRevenueOfFilmByName() {
-//    Scanner scanner = new Scanner(System.in);
-//    System.out.print("Enter film name: ");
-//    String filmName = scanner.nextLine().toUpperCase();
-//
-//    Film film = (Film) filmService.getAllFilms();
-//    for (Film film : filmService.getAllFilms()) {
-//        if (film.getFilmName().equals(filmName)) {
-//            return film;
-//        }
-//    }
-//    if (film == null) {
-//        System.out.println("Film not found!");
-//
-//    }
-//
-//    double revenue = orderService.getRevenueOfFilm(film.getId());
-//    System.out.println("                                     ╔════════════════════════╦════════════════╗");
-//    System.out.printf("                                     ║ %-22s║ %14s ║", "Film Name", "Revenue");
-//    System.out.println();
-//    System.out.println("                                     ╠════════════════════════╬════════════════╣");
-//    System.out.printf("                                     ║ %-22s║ %14s ║", film.getName(), CurrencyFormat.covertPriceToString(revenue));
-//    System.out.println();
-//    System.out.println("                                     ╚════════════════════════╩════════════════╝");
-//    return film;
-//}
 
 
     public void noChange() {
@@ -140,17 +112,21 @@ public class FilmView {
     }
 
 
-    public void addNewFilm() {
+    public void addNewFilm() throws IOException {
+        Menu menu = new Menu();
         Film film = new Film();
         long id;
         while (true) {
             //Scanner scanner1 = new Scanner(System.in);
 
-            System.out.println("Nhập ID phim: ");
+            System.out.println("Nhập ID phim hoặc nhập '0' để quay về menu: ");
             System.out.print("\t➥ ");
 
             try {
                 id = Long.parseLong(scanner.nextLine());
+                if (id == 0) {
+                    menu.manageFilm();
+                }
                 if (id > 0) {
                     if (filmService.checkIdFilm(id)) {
                         System.out.println("ID đã tồn tại!");
@@ -170,9 +146,12 @@ public class FilmView {
 
         String filmName;
         while (true) {
-            System.out.println("Nhập tên phim:");
+            System.out.println("Nhập tên phim hoặc nhập '0' để quay về menu:");
             System.out.print("\t➥ ");
             String nameNew = scanner.nextLine();
+            if (nameNew.equals("0")) {
+                menu.manageFilm();
+            }
             if (filmService.existFilmName(nameNew)) {
                 System.out.println("Phim đã tồn tại.Vui lòng kiểm tra lại! ");
             } else {
@@ -184,10 +163,13 @@ public class FilmView {
 
         long durationTime;
         while (true) {
-            System.out.println("Nhập thời lượng phim(>100 minute) : ");
+            System.out.println("Nhập thời lượng phim(>100 minute) hoặc nhập '0' để quay về menu : ");
             System.out.print("\t➥ ");
             try {
                 durationTime = Long.parseLong(scanner.nextLine());
+                if (durationTime == 0) {
+                    menu.manageFilm();
+                }
                 if (durationTime > 100) {
                     film.setDurationTime(durationTime);
                     break;
@@ -203,7 +185,7 @@ public class FilmView {
         while (true) {
             boolean check = false;
             menuType();
-            System.out.println("Chọn thể loại phim:");
+            System.out.println("Chọn thể loại phim hoặc nhập '0' để quay về menu:");
             System.out.print("\t➥ ");
             try {
                 choice = Integer.parseInt(scanner.nextLine());
@@ -232,8 +214,12 @@ public class FilmView {
                         typeOfFilm = EType.DRAMA;
                         check = true;
                         break;
+                    case 0:
+                        menu.manageFilm();
+                        break;
                     default:
                         System.out.println("Không đúng.Vui lòng chọn lại!");
+                        break;
                 }
             } catch (Exception e) {
                 System.out.println("Lựa chọn phải là một số!");
@@ -245,7 +231,6 @@ public class FilmView {
             }
         }
         film.setStatus(EStatus.NOW_SHOWING);
-
         // film = new Film(id,filmName,durationTime,typeOfFilm);
         filmService.add(film);
         System.out.println("Thêm phim mới thành công!");
@@ -262,39 +247,6 @@ public class FilmView {
         System.out.println("╚═════════════════════════════════╝");
     }
 
-    public void setType(Film film) {
-        menuType();
-        System.out.println("Chọn thể loại phim: ");
-        int option;
-        try {
-            option = Integer.parseInt(scanner.nextLine());
-            switch (option) {
-                case 1:
-                    film.setTypeOfFilm(EType.ACTION);
-                    break;
-                case 2:
-                    film.setTypeOfFilm(EType.CARTOON);
-                    break;
-                case 3:
-                    film.setTypeOfFilm(EType.HORROR);
-                    break;
-                case 4:
-                    film.setTypeOfFilm(EType.COMEDY);
-                    break;
-                case 5:
-                    film.setTypeOfFilm(EType.SPORT);
-                    break;
-                case 6:
-                    film.setTypeOfFilm(EType.DRAMA);
-                    break;
-                default:
-                    System.out.println("Không đúng.Vui lòng nhập lại!");
-            }
-        } catch (Exception e) {
-            System.out.println("Lựa chọn phải là một số!");
-        }
-
-    }
 
     public void deleteFilm() throws IOException {
         Menu menu = new Menu();
@@ -325,12 +277,7 @@ public class FilmView {
             deleteFilm();
             return;
         }
-        // System.out.println("Bạn có chắc chắn muốn xóa suất chiếu này không? (Y/N)");
-//        if (showTimeView1.confirmDelete()) {
-//            filmService.deleteFilmById(idFilm);
-//            System.out.println("Đã xóa suất chiếu có ID: " + idFilm);
-//            showAllFilms();
-//        }
+
 
         System.out.println("Bạn có chắc chắn muốn xóa suất chiếu này không? (Y/N)");
         String confirm = scanner.nextLine();

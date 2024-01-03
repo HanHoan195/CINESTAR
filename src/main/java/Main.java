@@ -6,5 +6,6 @@ public class Main {
         LoginView loginView = new LoginView();
         Menu menu = new Menu();
         menu.action();
+
     }
 }
